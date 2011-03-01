@@ -5,25 +5,61 @@
 #include <utility>
 #include <cstdarg>
 
-template <typename T> struct va_widened { typedef T t; };
-template <> struct va_widened<signed char> { typedef int t; };
-template <> struct va_widened<signed short> { typedef int t; };
-template <> struct va_widened<signed int> { typedef int t; };
-template <> struct va_widened<unsigned char> { typedef int t; };
-template <> struct va_widened<unsigned short> { typedef int t; };
-template <> struct va_widened<unsigned int> { typedef int t; };
-template <> struct va_widened<float> { typedef double t; };
-template <> struct va_widened<double> { typedef double t; };
+template <typename T> struct va_widened
+{
+  typedef T t;
+};
+template <> struct va_widened<signed char>
+{
+  typedef int t;
+};
+template <> struct va_widened<signed short>
+{
+  typedef int t;
+};
+template <> struct va_widened<signed int>
+{
+  typedef int t;
+};
+template <> struct va_widened<unsigned char>
+{
+  typedef int t;
+};
+template <> struct va_widened<unsigned short>
+{
+  typedef int t;
+};
+template <> struct va_widened<unsigned int>
+{
+  typedef int t;
+};
+template <> struct va_widened<float>
+{
+  typedef double t;
+};
+template <> struct va_widened<double>
+{
+  typedef double t;
+};
 
 class Hook
 {
 public:
   virtual void addCallback(void* function) {}
   virtual void addIdentifiedCallback(void* identifier, void* function) {}
-  virtual bool hasCallback(void* function) { return false; }
+  virtual bool hasCallback(void* function)
+  {
+    return false;
+  }
   virtual void remCallback(void* function) {}
-  virtual bool doUntilTrueVA(va_list vl) { return false; }
-  virtual bool doUntilFalseVA(va_list vl) { return false; }
+  virtual bool doUntilTrueVA(va_list vl)
+  {
+    return false;
+  }
+  virtual bool doUntilFalseVA(va_list vl)
+  {
+    return false;
+  }
   virtual void doAllVA(va_list vl) {}
 };
 
@@ -31,8 +67,8 @@ template <class R>
 class Hook0 : public Hook
 {
 public:
-  typedef R (*fatype_t)();
-  typedef R (*fitype_t)(void*);
+  typedef R(*fatype_t)();
+  typedef R(*fitype_t)(void*);
 
   fatype_t getCallback(int n)
   {
@@ -44,7 +80,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -56,9 +92,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -81,7 +117,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -106,9 +142,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -130,9 +166,9 @@ public:
 
   void doAll()
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -154,9 +190,9 @@ public:
 
   bool doUntilTrue()
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -186,9 +222,9 @@ public:
 
   bool doUntilFalse()
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -218,7 +254,7 @@ public:
 
   R doThis(int n)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -238,15 +274,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1>
 class Hook1 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1);
-  typedef R (*fitype_t)(void*, A1);
+  typedef R(*fatype_t)(A1);
+  typedef R(*fitype_t)(void*, A1);
 
   fatype_t getCallback(int n)
   {
@@ -258,7 +294,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -270,9 +306,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -295,7 +331,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -320,9 +356,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -344,9 +380,9 @@ public:
 
   void doAll(A1 a1)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -368,9 +404,9 @@ public:
 
   bool doUntilTrue(A1 a1)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -400,9 +436,9 @@ public:
 
   bool doUntilFalse(A1 a1)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -432,7 +468,7 @@ public:
 
   R doThis(int n, A1 a1)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -452,15 +488,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2>
 class Hook2 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2);
-  typedef R (*fitype_t)(void*, A1, A2);
+  typedef R(*fatype_t)(A1, A2);
+  typedef R(*fitype_t)(void*, A1, A2);
 
   fatype_t getCallback(int n)
   {
@@ -472,7 +508,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -484,9 +520,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -509,7 +545,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -534,9 +570,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -558,9 +594,9 @@ public:
 
   void doAll(A1 a1, A2 a2)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -583,9 +619,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -616,9 +652,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -649,7 +685,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -670,15 +706,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3>
 class Hook3 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3);
-  typedef R (*fitype_t)(void*, A1, A2, A3);
+  typedef R(*fatype_t)(A1, A2, A3);
+  typedef R(*fitype_t)(void*, A1, A2, A3);
 
   fatype_t getCallback(int n)
   {
@@ -690,7 +726,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -702,9 +738,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -727,7 +763,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -752,9 +788,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -776,9 +812,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -802,9 +838,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -836,9 +872,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -870,7 +906,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -892,15 +928,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4>
 class Hook4 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4);
+  typedef R(*fatype_t)(A1, A2, A3, A4);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4);
 
   fatype_t getCallback(int n)
   {
@@ -912,7 +948,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -924,9 +960,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -949,7 +985,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -974,9 +1010,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -998,9 +1034,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1025,9 +1061,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1060,9 +1096,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1095,7 +1131,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -1118,15 +1154,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5>
 class Hook5 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5);
 
   fatype_t getCallback(int n)
   {
@@ -1138,7 +1174,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -1150,9 +1186,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -1175,7 +1211,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -1200,9 +1236,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -1224,9 +1260,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1252,9 +1288,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1288,9 +1324,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1324,7 +1360,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -1348,15 +1384,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6>
 class Hook6 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6);
 
   fatype_t getCallback(int n)
   {
@@ -1368,7 +1404,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -1380,9 +1416,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -1405,7 +1441,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -1430,9 +1466,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -1454,9 +1490,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1483,9 +1519,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1520,9 +1556,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1557,7 +1593,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -1582,15 +1618,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
 class Hook7 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7);
 
   fatype_t getCallback(int n)
   {
@@ -1602,7 +1638,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -1614,9 +1650,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -1639,7 +1675,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -1664,9 +1700,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -1688,9 +1724,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1718,9 +1754,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1756,9 +1792,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1794,7 +1830,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -1820,15 +1856,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
 class Hook8 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8);
 
   fatype_t getCallback(int n)
   {
@@ -1840,7 +1876,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -1852,9 +1888,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -1877,7 +1913,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -1902,9 +1938,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -1926,9 +1962,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1957,9 +1993,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -1996,9 +2032,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2035,7 +2071,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -2062,15 +2098,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
 class Hook9 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9);
 
   fatype_t getCallback(int n)
   {
@@ -2082,7 +2118,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -2094,9 +2130,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -2119,7 +2155,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -2144,9 +2180,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -2168,9 +2204,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2200,9 +2236,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2240,9 +2276,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2280,7 +2316,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -2308,15 +2344,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10>
 class Hook10 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10);
 
   fatype_t getCallback(int n)
   {
@@ -2328,7 +2364,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -2340,9 +2376,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -2365,7 +2401,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -2390,9 +2426,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -2414,9 +2450,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2447,9 +2483,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2488,9 +2524,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2529,7 +2565,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -2558,15 +2594,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11>
 class Hook11 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11);
 
   fatype_t getCallback(int n)
   {
@@ -2578,7 +2614,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -2590,9 +2626,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -2615,7 +2651,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -2640,9 +2676,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -2664,9 +2700,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2698,9 +2734,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2740,9 +2776,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2782,7 +2818,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -2812,15 +2848,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12>
 class Hook12 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12);
 
   fatype_t getCallback(int n)
   {
@@ -2832,7 +2868,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -2844,9 +2880,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -2869,7 +2905,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -2894,9 +2930,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -2918,9 +2954,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2953,9 +2989,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -2996,9 +3032,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -3039,7 +3075,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -3070,15 +3106,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13>
 class Hook13 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13);
 
   fatype_t getCallback(int n)
   {
@@ -3090,7 +3126,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -3102,9 +3138,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -3127,7 +3163,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -3152,9 +3188,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -3176,9 +3212,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -3212,9 +3248,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -3256,9 +3292,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -3300,7 +3336,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -3332,15 +3368,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14>
 class Hook14 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14);
 
   fatype_t getCallback(int n)
   {
@@ -3352,7 +3388,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -3364,9 +3400,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -3389,7 +3425,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -3414,9 +3450,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -3438,9 +3474,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -3475,9 +3511,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -3520,9 +3556,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -3565,7 +3601,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -3598,15 +3634,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, class A15>
 class Hook15 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15);
 
   fatype_t getCallback(int n)
   {
@@ -3618,7 +3654,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -3630,9 +3666,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -3655,7 +3691,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -3680,9 +3716,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -3704,9 +3740,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -3742,9 +3778,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -3788,9 +3824,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -3834,7 +3870,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -3868,15 +3904,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, class A15, class A16>
 class Hook16 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16);
 
   fatype_t getCallback(int n)
   {
@@ -3888,7 +3924,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -3900,9 +3936,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -3925,7 +3961,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -3950,9 +3986,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -3974,9 +4010,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4013,9 +4049,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4060,9 +4096,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4107,7 +4143,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -4142,15 +4178,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, class A15, class A16, class A17>
 class Hook17 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17);
 
   fatype_t getCallback(int n)
   {
@@ -4162,7 +4198,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -4174,9 +4210,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -4199,7 +4235,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -4224,9 +4260,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -4248,9 +4284,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4288,9 +4324,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4336,9 +4372,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4384,7 +4420,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -4420,15 +4456,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, class A15, class A16, class A17, class A18>
 class Hook18 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18);
 
   fatype_t getCallback(int n)
   {
@@ -4440,7 +4476,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -4452,9 +4488,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -4477,7 +4513,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -4502,9 +4538,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -4526,9 +4562,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4567,9 +4603,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4616,9 +4652,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4665,7 +4701,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -4702,15 +4738,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, class A15, class A16, class A17, class A18, class A19>
 class Hook19 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19);
 
   fatype_t getCallback(int n)
   {
@@ -4722,7 +4758,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -4734,9 +4770,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -4759,7 +4795,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -4784,9 +4820,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -4808,9 +4844,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18, A19 a19)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4850,9 +4886,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18, A19 a19)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4900,9 +4936,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18, A19 a19)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -4950,7 +4986,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18, A19 a19)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -4988,15 +5024,15 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 template <class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11, class A12, class A13, class A14, class A15, class A16, class A17, class A18, class A19, class A20>
 class Hook20 : public Hook
 {
 public:
-  typedef R (*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20);
-  typedef R (*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20);
+  typedef R(*fatype_t)(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20);
+  typedef R(*fitype_t)(void*, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20);
 
   fatype_t getCallback(int n)
   {
@@ -5008,7 +5044,7 @@ public:
     return m_callbacks[n].first;
   }
 
-  std::vector<std::pair<void*,void*> >* getCallbacks()
+  std::vector<std::pair<void*, void*> >* getCallbacks()
   {
     return &m_callbacks;
   }
@@ -5020,9 +5056,9 @@ public:
 
   bool hasCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if ((ia)->second == function)
       {
@@ -5045,7 +5081,7 @@ public:
 
   void addIdentifiedCallback(void* identifier, void* function)
   {
-    m_callbacks.push_back(std::pair<void*,void*>(identifier,function));
+    m_callbacks.push_back(std::pair<void*, void*>(identifier, function));
   }
 
   void addIdentifiedCallback(void* identifier, fatype_t function)
@@ -5070,9 +5106,9 @@ public:
 
   void remCallback(void* function)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->second == function)
       {
@@ -5094,9 +5130,9 @@ public:
 
   void doAll(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18, A19 a19, A20 a20)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -5137,9 +5173,9 @@ public:
 
   bool doUntilTrue(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18, A19 a19, A20 a20)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -5188,9 +5224,9 @@ public:
 
   bool doUntilFalse(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18, A19 a19, A20 a20)
   {
-    typename std::vector<std::pair<void*,void*> >::iterator ia = m_callbacks.begin();
-    typename std::vector<std::pair<void*,void*> >::iterator ib = m_callbacks.end();
-    for (;ia!=ib;++ia)
+    typename std::vector<std::pair<void*, void*> >::iterator ia = m_callbacks.begin();
+    typename std::vector<std::pair<void*, void*> >::iterator ib = m_callbacks.end();
+    for (; ia != ib; ++ia)
     {
       if (ia->first == NULL)
       {
@@ -5239,7 +5275,7 @@ public:
 
   R doThis(int n, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16, A17 a17, A18 a18, A19 a19, A20 a20)
   {
-    std::pair<void*,void*>* cb = &(m_callbacks[n]);
+    std::pair<void*, void*>* cb = &(m_callbacks[n]);
 
     if (cb->first == NULL)
     {
@@ -5278,7 +5314,7 @@ public:
   }
 
 private:
-  std::vector<std::pair<void*,void*> > m_callbacks;
+  std::vector<std::pair<void*, void*> > m_callbacks;
 };
 
 #endif

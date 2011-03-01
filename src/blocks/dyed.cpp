@@ -32,7 +32,8 @@
 
 bool BlockDyed::affectedBlock(int block)
 {
-  switch(block){
+  switch (block)
+  {
   case BLOCK_GRAY_CLOTH:
   case BLOCK_WOOD:
   case BLOCK_STEP:
@@ -48,23 +49,25 @@ bool BlockDyed::onPlace(User* user, int16_t newblock, int32_t x, int8_t y, int32
 
   if (!Mineserver::get()->map(map)->getBlock(x, y, z, &oldblock, &oldmeta))
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
   //Combine two steps
-  if(newblock == BLOCK_STEP && oldblock == BLOCK_STEP && direction == BLOCK_TOP)
+  if (newblock == BLOCK_STEP && oldblock == BLOCK_STEP && direction == BLOCK_TOP)
   {
-    Item item = user->inv[user->curItem+36];
+    Item item = user->inv[user->curItem + 36];
 
     if (item.getHealth() == oldmeta)
     {
       Mineserver::get()->map(map)->setBlock(x, y, z, (char)BLOCK_DOUBLE_STEP, oldmeta);
       Mineserver::get()->map(map)->sendBlockChange(x, y, z, (char)BLOCK_DOUBLE_STEP, oldmeta);
-      revertBlock(user,x,y,z,map);
+      revertBlock(user, x, y, z, map);
       return true;
-    } else {
-      revertBlock(user,x,y,z,map);
+    }
+    else
+    {
+      revertBlock(user, x, y, z, map);
       return true;
     }
   }
@@ -72,29 +75,29 @@ bool BlockDyed::onPlace(User* user, int16_t newblock, int32_t x, int8_t y, int32
   /* Check block below allows blocks placed on top */
   if (!this->isBlockStackable(oldblock))
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
-  if (!this->translateDirection(&x,&y,&z,map,direction))
+  if (!this->translateDirection(&x, &y, &z, map, direction))
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
-  if (this->isUserOnBlock(x,y,z,map))
+  if (this->isUserOnBlock(x, y, z, map))
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
-  if (!this->isBlockEmpty(x,y,z,map))
+  if (!this->isBlockEmpty(x, y, z, map))
   {
-    revertBlock(user,x,y,z,map);
-    return true; 
+    revertBlock(user, x, y, z, map);
+    return true;
   }
 
-  Item item = user->inv[user->curItem+36];
+  Item item = user->inv[user->curItem + 36];
 
   Mineserver::get()->map(map)->setBlock(x, y, z, (char)newblock, item.getHealth());
   Mineserver::get()->map(map)->sendBlockChange(x, y, z, (char)newblock, item.getHealth());

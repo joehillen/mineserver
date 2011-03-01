@@ -32,7 +32,7 @@
 
 bool BlockLadder::affectedBlock(int block)
 {
-  switch(block)
+  switch (block)
   {
   case BLOCK_LADDER:
     return true;
@@ -60,28 +60,28 @@ bool BlockLadder::onBroken(User* user, int8_t status, int32_t x, int8_t y, int32
 
   if (!Mineserver::get()->map(map)->getBlock(x, y, z, &block, &meta))
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
   Mineserver::get()->map(map)->sendBlockChange(x, y, z, BLOCK_AIR, 0);
   Mineserver::get()->map(map)->setBlock(x, y, z, BLOCK_AIR, 0);
-  this->spawnBlockItem(x,y,z,map,block);
+  this->spawnBlockItem(x, y, z, map, block);
   return false;
 }
 
 void BlockLadder::onNeighbourBroken(User* user, int16_t oldblock, int32_t x, int8_t y, int32_t z, int map, int8_t direction)
 {
-  uint8_t block,meta;
+  uint8_t block, meta;
   Mineserver::get()->map(map)->getBlock(x, y, z, &block, &meta);
 
   //Ladder is not attached to top or bottom block
-  if(direction == BLOCK_TOP || direction == BLOCK_BOTTOM)
+  if (direction == BLOCK_TOP || direction == BLOCK_BOTTOM)
   {
     return;
   }
 
-  if( (meta == 2 && direction == BLOCK_EAST) ||
+  if ((meta == 2 && direction == BLOCK_EAST) ||
       (meta == 3 && direction == BLOCK_WEST) ||
       (meta == 4 && direction == BLOCK_NORTH) ||
       (meta == 5 && direction == BLOCK_SOUTH))
@@ -99,51 +99,59 @@ bool BlockLadder::onPlace(User* user, int16_t newblock, int32_t x, int8_t y, int
   uint8_t oldmeta;
 
   //Cant place ladders on top or bottom of the block
-  if(direction == BLOCK_TOP || direction == BLOCK_BOTTOM)
+  if (direction == BLOCK_TOP || direction == BLOCK_BOTTOM)
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
   if (!Mineserver::get()->map(map)->getBlock(x, y, z, &oldblock, &oldmeta))
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
   /* Check block below allows blocks placed on top */
   if (!this->isBlockStackable(oldblock))
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
   /* move the x,y,z coords dependent upon placement direction */
-  if (!this->translateDirection(&x,&y,&z,map,direction))
+  if (!this->translateDirection(&x, &y, &z, map, direction))
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
-  if (this->isUserOnBlock(x,y,z,map))
+  if (this->isUserOnBlock(x, y, z, map))
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
-  if (!this->isBlockEmpty(x,y,z,map))
+  if (!this->isBlockEmpty(x, y, z, map))
   {
-    revertBlock(user,x,y,z,map);
+    revertBlock(user, x, y, z, map);
     return true;
   }
 
   int8_t ladderDirection = 0;
-  switch(direction)
+  switch (direction)
   {
-    case BLOCK_WEST:  ladderDirection = 2; break;
-    case BLOCK_EAST:  ladderDirection = 3; break;
-    case BLOCK_SOUTH: ladderDirection = 4; break;
-    case BLOCK_NORTH: ladderDirection = 5; break;
+  case BLOCK_WEST:
+    ladderDirection = 2;
+    break;
+  case BLOCK_EAST:
+    ladderDirection = 3;
+    break;
+  case BLOCK_SOUTH:
+    ladderDirection = 4;
+    break;
+  case BLOCK_NORTH:
+    ladderDirection = 5;
+    break;
   }
 
   Mineserver::get()->map(map)->setBlock(x, y, z, (char)newblock, ladderDirection);

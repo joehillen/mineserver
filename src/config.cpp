@@ -60,7 +60,7 @@ ConfigNode* Config::root()
 
 bool Config::bData(const std::string& key)
 {
-  if (m_root->has(key))  
+  if (m_root->has(key))
   {
     return m_root->get(key, false)->bData();
   }
@@ -70,7 +70,7 @@ bool Config::bData(const std::string& key)
 
 int Config::iData(const std::string& key)
 {
-  if (m_root->has(key))  
+  if (m_root->has(key))
   {
     return m_root->get(key, false)->iData();
   }
@@ -80,7 +80,7 @@ int Config::iData(const std::string& key)
 
 int64_t Config::lData(const std::string& key)
 {
-  if (m_root->has(key))  
+  if (m_root->has(key))
   {
     return m_root->get(key, false)->lData();
   }
@@ -90,7 +90,7 @@ int64_t Config::lData(const std::string& key)
 
 float Config::fData(const std::string& key)
 {
-  if (m_root->has(key))  
+  if (m_root->has(key))
   {
     return m_root->get(key, false)->fData();
   }
@@ -100,7 +100,7 @@ float Config::fData(const std::string& key)
 
 double Config::dData(const std::string& key)
 {
-  if (m_root->has(key))  
+  if (m_root->has(key))
   {
     return m_root->get(key, false)->dData();
   }
@@ -110,7 +110,7 @@ double Config::dData(const std::string& key)
 
 std::string Config::sData(const std::string& key)
 {
-  if (m_root->has(key))  
+  if (m_root->has(key))
   {
     return m_root->get(key, false)->sData();
   }

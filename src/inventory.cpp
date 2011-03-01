@@ -27,11 +27,11 @@
 
 
 #ifdef WIN32
-  #include <conio.h>
-  #include <direct.h>
-  #include <winsock2.h>
+#include <conio.h>
+#include <direct.h>
+#include <winsock2.h>
 #else
-  #include <netinet/in.h>
+#include <netinet/in.h>
 #endif
 #include <string.h>
 #include <cstdlib>
@@ -58,25 +58,33 @@
 
 void Item::sendUpdate()
 {
-  if(player!=NULL && ready){
-    if(slot==player->curItem+36){
+  if (player != NULL && ready)
+  {
+    if (slot == player->curItem + 36)
+    {
       Packet pkt;
       pkt << (int8_t)PACKET_ENTITY_EQUIPMENT << (int32_t)player->UID
           << (int16_t)0 << (int16_t)type << (int16_t) health;
       player->sendAll((uint8_t*)pkt.getWrite(), pkt.getWriteLen());
     }
-    if(slot>=5 && slot <=8){
+    if (slot >= 5 && slot <= 8)
+    {
       Packet pkt;
       pkt << (int8_t)PACKET_ENTITY_EQUIPMENT << (int32_t)player->UID
-          << (int16_t)(5-(slot-4)) << (int16_t)type<< (int16_t) 0;
+          << (int16_t)(5 - (slot - 4)) << (int16_t)type << (int16_t) 0;
       player->sendAll((uint8_t*)pkt.getWrite(), pkt.getWriteLen());
     }
     int window = 0;
     int t_slot = slot;
-    if(slot==-1){window =-1; t_slot=0;}
+    if (slot == -1)
+    {
+      window = -1;
+      t_slot = 0;
+    }
     player->buffer << (int8_t)PACKET_SET_SLOT << (int8_t)window
                    << (int16_t)t_slot << (int16_t) type;
-    if(type != -1){
+    if (type != -1)
+    {
       player->buffer << (int8_t)count << (int16_t)health;
     }
   }
@@ -86,7 +94,7 @@ void Item::sendUpdate()
 void Item::setType(int16_t type)
 {
   this->type = type;
-  if(type == -1)
+  if (type == -1)
   {
     count = 0;
     health = 0;
@@ -103,12 +111,21 @@ void Item::setCount(int8_t count)
 void Item::setHealth(int16_t health)
 {
   bool rightUse;
-  if(health <= 0){ this->health = health; return;}
+  if (health <= 0)
+  {
+    this->health = health;
+    return;
+  }
   int healthMax = itemHealth(type);
-  if(health > healthMax && healthMax>0){
-    type=-1; count = 0; this->health=0;
+  if (health > healthMax && healthMax > 0)
+  {
+    type = -1;
+    count = 0;
+    this->health = 0;
     sendUpdate();
-  }else{
+  }
+  else
+  {
     this->health = health;
     sendUpdate();
   }
@@ -117,7 +134,11 @@ void Item::setHealth(int16_t health)
 void Item::decCount(int c)
 {
   count -= c;
-  if(count < 1){ setType(-1); return; }
+  if (count < 1)
+  {
+    setType(-1);
+    return;
+  }
   sendUpdate();
 }
 
@@ -125,7 +146,8 @@ void Item::incHealth(int c)
 {
   int healthMax;
   health += c;
-  if(health > healthMax && healthMax>0){
+  if (health > healthMax && healthMax > 0)
+  {
     setType(-1);
   }
   sendUpdate();
@@ -133,48 +155,48 @@ void Item::incHealth(int c)
 
 int16_t Item::itemHealth(int item)
 {
-  int16_t health=0;
-  switch(type)
+  int16_t health = 0;
+  switch (type)
   {
-    case ITEM_GOLD_AXE:
-    case ITEM_GOLD_PICKAXE:
-    case ITEM_GOLD_HOE:
-    case ITEM_GOLD_SPADE:
-    case ITEM_GOLD_SWORD:
-      health = 33;
+  case ITEM_GOLD_AXE:
+  case ITEM_GOLD_PICKAXE:
+  case ITEM_GOLD_HOE:
+  case ITEM_GOLD_SPADE:
+  case ITEM_GOLD_SWORD:
+    health = 33;
     break;
-    case ITEM_WOODEN_AXE:
-    case ITEM_WOODEN_PICKAXE:
-    case ITEM_WOODEN_HOE:
-    case ITEM_WOODEN_SPADE:
-    case ITEM_WOODEN_SWORD:
-      health = 60;
+  case ITEM_WOODEN_AXE:
+  case ITEM_WOODEN_PICKAXE:
+  case ITEM_WOODEN_HOE:
+  case ITEM_WOODEN_SPADE:
+  case ITEM_WOODEN_SWORD:
+    health = 60;
     break;
-    case ITEM_STONE_AXE:
-    case ITEM_STONE_PICKAXE:
-    case ITEM_STONE_HOE:
-    case ITEM_STONE_SPADE:
-    case ITEM_STONE_SWORD:
-    case ITEM_BOW:
-      health = 132;
+  case ITEM_STONE_AXE:
+  case ITEM_STONE_PICKAXE:
+  case ITEM_STONE_HOE:
+  case ITEM_STONE_SPADE:
+  case ITEM_STONE_SWORD:
+  case ITEM_BOW:
+    health = 132;
     break;
-    case ITEM_IRON_AXE:
-    case ITEM_IRON_PICKAXE:
-    case ITEM_IRON_HOE:
-    case ITEM_IRON_SPADE:
-    case ITEM_IRON_SWORD:
-      health = 251;
+  case ITEM_IRON_AXE:
+  case ITEM_IRON_PICKAXE:
+  case ITEM_IRON_HOE:
+  case ITEM_IRON_SPADE:
+  case ITEM_IRON_SWORD:
+    health = 251;
     break;
-    case ITEM_DIAMOND_AXE:
-    case ITEM_DIAMOND_PICKAXE:
-    case ITEM_DIAMOND_HOE:
-    case ITEM_DIAMOND_SPADE:
-    case ITEM_DIAMOND_SWORD:
-      health = 1562;
+  case ITEM_DIAMOND_AXE:
+  case ITEM_DIAMOND_PICKAXE:
+  case ITEM_DIAMOND_HOE:
+  case ITEM_DIAMOND_SPADE:
+  case ITEM_DIAMOND_SWORD:
+    health = 1562;
     break;
 
-    default:
-      health = 0;
+  default:
+    health = 0;
   }
   return health;
 }
@@ -184,7 +206,7 @@ Inventory::Inventory()
 {
   std::ifstream ifs("recipes/ENABLED_RECIPES.cfg");
 
-  if(ifs.fail())
+  if (ifs.fail())
   {
     ifs.close();
     return;
@@ -193,21 +215,25 @@ Inventory::Inventory()
   std::string temp;
   std::vector<std::string> receiptFiles;
   std::string text;
-  while(getline(ifs, temp))
+  while (getline(ifs, temp))
   {
     //If empty line
-    if(temp.size() == 0)
+    if (temp.size() == 0)
+    {
       continue;
+    }
 
     // If commentline -> skip to next
-    if(temp[0] == COMMENTPREFIX)
+    if (temp[0] == COMMENTPREFIX)
+    {
       continue;
-    
+    }
+
     receiptFiles.push_back(temp + ".recipe");
   }
   ifs.close();
-  
-  for(unsigned int i = 0; i < receiptFiles.size(); i++)
+
+  for (unsigned int i = 0; i < receiptFiles.size(); i++)
   {
     readRecipe("recipes/" + receiptFiles[i]);
   }
@@ -215,7 +241,7 @@ Inventory::Inventory()
 
 bool Inventory::addRecipe(int width, int height, std::vector<Item*> inputrecipe, int outputCount, int16_t outputType, int16_t outputHealth)
 {
-  Recipe *recipe = new Recipe;
+  Recipe* recipe = new Recipe;
 
   recipe->width  = width;
   recipe->height = height;
@@ -243,7 +269,7 @@ bool Inventory::readRecipe(std::string recipeFile)
   //LOG(INFO, "Inventory", "Reading: " + recipeFile);
 
   std::string temp;
-  
+
   int height = 0, width = 0, outCount = 0;
   int16_t outType = 0, outHealth = 0;
 
@@ -253,33 +279,39 @@ bool Inventory::readRecipe(std::string recipeFile)
   std::vector<std::string> line;
   std::vector<Item*> recipetable;
   std::string text;
-  while(getline(ifs, temp))
+  while (getline(ifs, temp))
   {
     //If empty line
-    if(temp.size() == 0)
+    if (temp.size() == 0)
+    {
       continue;
+    }
 
     // If commentline -> skip to next
-    if(temp[0] == COMMENTPREFIX)
+    if (temp[0] == COMMENTPREFIX)
+    {
       continue;
+    }
 
     // Init vars
     del = 0;
     line.clear();
 
     // Process line
-    while(temp.length() > 0)
+    while (temp.length() > 0)
     {
       // Remove white spaces
-      while(temp[0] == ' ')
+      while (temp[0] == ' ')
+      {
         temp = temp.substr(1);
+      }
 
       // Split words
       del = temp.find(' ');
-      if(del > -1)
+      if (del > -1)
       {
         line.push_back(temp.substr(0, del));
-        temp = temp.substr(del+1);
+        temp = temp.substr(del + 1);
       }
       else
       {
@@ -289,35 +321,38 @@ bool Inventory::readRecipe(std::string recipeFile)
     }
 
     // Begin recipe
-    if(line.size() == 1 && line[0] == "<-")
+    if (line.size() == 1 && line[0] == "<-")
     {
       readingRecipe = true;
       continue;
     }
     // Begin recipe
-    if(line.size() == 1 && line[0] == "->")
+    if (line.size() == 1 && line[0] == "->")
     {
       readingRecipe = false;
       continue;
     }
 
-    if(readingRecipe)
+    if (readingRecipe)
     {
-      for(unsigned int i = 0; i < line.size(); i++)
+      for (unsigned int i = 0; i < line.size(); i++)
       {
-        std::string data (line[i]);
+        std::string data(line[i]);
         Item* item = new Item();
-        item->setCount(1); item->setHealth(-1);
+        item->setCount(1);
+        item->setHealth(-1);
         int location = data.find("x");
-        if(location>-1){
+        if (location > -1)
+        {
           // Quantity before ID
-          item->setCount(atoi(data.substr(0,location).c_str()));
-          data = data.substr(location+1, std::string::npos);
+          item->setCount(atoi(data.substr(0, location).c_str()));
+          data = data.substr(location + 1, std::string::npos);
         }
         location = data.find(":");
-        if(location>-1){
+        if (location > -1)
+        {
           // Meta after ID
-          item->setHealth(atoi(data.substr(location+1, std::string::npos).c_str()));
+          item->setHealth(atoi(data.substr(location + 1, std::string::npos).c_str()));
           data = data.substr(0, location);
         }
         item->setType(atoi(data.c_str()));
@@ -354,101 +389,112 @@ bool Inventory::readRecipe(std::string recipeFile)
 
   addRecipe(width, height, recipetable, outCount, outType, outHealth);
 
-//  delete [] inrecipe;
-  
+  //  delete [] inrecipe;
+
   return true;
 }
 
 bool Inventory::canBeArmour(int slot, int type)
 {
-  if(slot == 5){
+  if (slot == 5)
+  {
     // Helmet slot. Lots of fun here
-    if(Mineserver::get()->m_only_helmets){
-      switch(type){
-        case ITEM_LEATHER_HELMET:
-        case ITEM_CHAINMAIL_HELMET:
-        case ITEM_IRON_HELMET:
-        case ITEM_DIAMOND_HELMET:
-        case ITEM_GOLD_HELMET:
-          return true;
-          break;
+    if (Mineserver::get()->m_only_helmets)
+    {
+      switch (type)
+      {
+      case ITEM_LEATHER_HELMET:
+      case ITEM_CHAINMAIL_HELMET:
+      case ITEM_IRON_HELMET:
+      case ITEM_DIAMOND_HELMET:
+      case ITEM_GOLD_HELMET:
+        return true;
+        break;
       }
       return false;
-    }else{
+    }
+    else
+    {
       return true;
     }
-  }else if(slot == 6){
-    switch(type)
+  }
+  else if (slot == 6)
+  {
+    switch (type)
     {
-      case ITEM_LEATHER_CHESTPLATE:
-      case ITEM_CHAINMAIL_CHESTPLATE:
-      case ITEM_IRON_CHESTPLATE:
-      case ITEM_DIAMOND_CHESTPLATE:
-      case ITEM_GOLD_CHESTPLATE:
-        return true;
-        break;
-    }
-    return false;
-  }else if(slot == 7){
-    switch(type)
-    {
-      case ITEM_LEATHER_LEGGINGS:
-      case ITEM_CHAINMAIL_LEGGINGS:
-      case ITEM_IRON_LEGGINGS:
-      case ITEM_DIAMOND_LEGGINGS:
-      case ITEM_GOLD_LEGGINGS:
-        return true;
-        break;
-    }
-    return false;
-  }else if(slot == 8){
-    switch(type)
-    {
-      case ITEM_LEATHER_BOOTS:
-      case ITEM_CHAINMAIL_BOOTS:
-      case ITEM_IRON_BOOTS:
-      case ITEM_DIAMOND_BOOTS:
-      case ITEM_GOLD_BOOTS:
-        return true;
-        break;
+    case ITEM_LEATHER_CHESTPLATE:
+    case ITEM_CHAINMAIL_CHESTPLATE:
+    case ITEM_IRON_CHESTPLATE:
+    case ITEM_DIAMOND_CHESTPLATE:
+    case ITEM_GOLD_CHESTPLATE:
+      return true;
+      break;
     }
     return false;
   }
-  Mineserver::get()->logger()->log(LogType::LOG_WARNING,"Armour", "Unknown armour slot.");
+  else if (slot == 7)
+  {
+    switch (type)
+    {
+    case ITEM_LEATHER_LEGGINGS:
+    case ITEM_CHAINMAIL_LEGGINGS:
+    case ITEM_IRON_LEGGINGS:
+    case ITEM_DIAMOND_LEGGINGS:
+    case ITEM_GOLD_LEGGINGS:
+      return true;
+      break;
+    }
+    return false;
+  }
+  else if (slot == 8)
+  {
+    switch (type)
+    {
+    case ITEM_LEATHER_BOOTS:
+    case ITEM_CHAINMAIL_BOOTS:
+    case ITEM_IRON_BOOTS:
+    case ITEM_DIAMOND_BOOTS:
+    case ITEM_GOLD_BOOTS:
+      return true;
+      break;
+    }
+    return false;
+  }
+  Mineserver::get()->logger()->log(LogType::LOG_WARNING, "Armour", "Unknown armour slot.");
   return false;
 }
-  
 
-bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rightClick, int16_t actionNumber, int16_t itemID, int8_t itemCount,int16_t itemUses)
-{  
+
+bool Inventory::windowClick(User* user, int8_t windowID, int16_t slot, int8_t rightClick, int16_t actionNumber, int16_t itemID, int8_t itemCount, int16_t itemUses)
+{
   //Ack
   user->buffer << (int8_t)PACKET_TRANSACTION << (int8_t)windowID << (int16_t)actionNumber << (int8_t)1;
 
   //Mineserver::get()->logger()->log(1,"window: " + dtos(windowID) + " slot: " + dtos(slot) + " (" + dtos(actionNumber) + ") itemID: " + dtos(itemID));
   //Click outside the window
-  if(slot == -999)
+  if (slot == -999)
   {
-    if(user->inventoryHolding.getType() != -1)
+    if (user->inventoryHolding.getType() != -1)
     {
-      Mineserver::get()->map(user->pos.map)->createPickupSpawn((int)user->pos.x, (int)user->pos.y, (int)user->pos.z, 
-                                                  user->inventoryHolding.getType(), user->inventoryHolding.getCount(),
-                                                  user->inventoryHolding.getHealth(),user);
+      Mineserver::get()->map(user->pos.map)->createPickupSpawn((int)user->pos.x, (int)user->pos.y, (int)user->pos.z,
+          user->inventoryHolding.getType(), user->inventoryHolding.getCount(),
+          user->inventoryHolding.getHealth(), user);
       user->inventoryHolding.setType(-1);
     }
     return true;
   }
 
-  if(!user->isOpenInv && windowID != 0)
+  if (!user->isOpenInv && windowID != 0)
   {
     return false;
   }
 
   sChunk* chunk = NULL;
-  if(windowID != 0)
+  if (windowID != 0)
   {
-    chunk = Mineserver::get()->map(user->pos.map)->chunks.getChunk(blockToChunk(user->openInv.x),blockToChunk(user->openInv.z));
+    chunk = Mineserver::get()->map(user->pos.map)->chunks.getChunk(blockToChunk(user->openInv.x), blockToChunk(user->openInv.z));
 
-    if(chunk == NULL)
+    if (chunk == NULL)
     {
       return false;
     }
@@ -459,27 +505,27 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
   std::vector<User*>* otherUsers = NULL;
   OpenInventory* currentInventory = NULL;
 
-  if(windowID != WINDOW_PLAYER)
+  if (windowID != WINDOW_PLAYER)
   {
     std::vector<OpenInventory*>* inv = NULL;
-    switch(user->openInv.type)
+    switch (user->openInv.type)
     {
-      case WINDOW_CHEST:
-        inv = &openChests;
-        break;
-      case WINDOW_FURNACE:
-        inv = &openFurnaces;
-        break;
-      case WINDOW_WORKBENCH:
-        inv = &openWorkbenches;
-        break;
+    case WINDOW_CHEST:
+      inv = &openChests;
+      break;
+    case WINDOW_FURNACE:
+      inv = &openFurnaces;
+      break;
+    case WINDOW_WORKBENCH:
+      inv = &openWorkbenches;
+      break;
     }
 
-    for(uint32_t i = 0; i < inv->size(); i++)
+    for (uint32_t i = 0; i < inv->size(); i++)
     {
-      if((*inv)[i]->x == user->openInv.x &&
-         (*inv)[i]->y == user->openInv.y &&
-         (*inv)[i]->z == user->openInv.z)
+      if ((*inv)[i]->x == user->openInv.x &&
+          (*inv)[i]->y == user->openInv.y &&
+          (*inv)[i]->z == user->openInv.z)
       {
         otherUsers = &(*inv)[i]->users;
         currentInventory = (*inv)[i];
@@ -487,127 +533,137 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
       }
     }
 
-    if(otherUsers == NULL || currentInventory == NULL)
+    if (otherUsers == NULL || currentInventory == NULL)
     {
       return false;
     }
   }
 
   Item* slotItem = NULL;
-  furnaceData *tempFurnace = NULL;
+  furnaceData* tempFurnace = NULL;
 
-  switch(windowID)
+  switch (windowID)
   {
-     //Player inventory
-    case WINDOW_PLAYER:
-      slotItem=&user->inv[slot];
-      break;
-    case WINDOW_CHEST:
-      if(slot>26)
+    //Player inventory
+  case WINDOW_PLAYER:
+    slotItem = &user->inv[slot];
+    break;
+  case WINDOW_CHEST:
+    if (slot > 26)
+    {
+      slotItem = &user->inv[slot - 18];
+    }
+    else
+    {
+      for (uint32_t i = 0; i < chunk->chests.size(); i ++)
       {
-        slotItem=&user->inv[slot-18];
-      }
-      else
-      {
-        for(uint32_t i = 0; i < chunk->chests.size(); i ++)
+        if (chunk->chests[i]->x == user->openInv.x &&
+            chunk->chests[i]->y == user->openInv.y &&
+            chunk->chests[i]->z == user->openInv.z)
         {
-          if(chunk->chests[i]->x == user->openInv.x &&
-             chunk->chests[i]->y == user->openInv.y &&
-             chunk->chests[i]->z == user->openInv.z)
-          {
-            slotItem = &chunk->chests[i]->items[slot];
-            break;
-          }
-        }
-        //Create chest data if it doesn't exist
-        if(slotItem == NULL)
-        {
-          chestData *newChest = new chestData;
-          newChest->x = user->openInv.x;
-          newChest->y = user->openInv.y;
-          newChest->z = user->openInv.z;
-          chunk->chests.push_back(newChest);
-          slotItem = &newChest->items[slot];
+          slotItem = &chunk->chests[i]->items[slot];
+          break;
         }
       }
-      break;
-    case WINDOW_LARGE_CHEST:
-      if(slot>54)
+      //Create chest data if it doesn't exist
+      if (slotItem == NULL)
       {
-        slotItem=&user->inv[slot-47];
+        chestData* newChest = new chestData;
+        newChest->x = user->openInv.x;
+        newChest->y = user->openInv.y;
+        newChest->z = user->openInv.z;
+        chunk->chests.push_back(newChest);
+        slotItem = &newChest->items[slot];
       }
-      else
+    }
+    break;
+  case WINDOW_LARGE_CHEST:
+    if (slot > 54)
+    {
+      slotItem = &user->inv[slot - 47];
+    }
+    else
+    {
+      //ToDo: Handle large chest
+    }
+    break;
+  case WINDOW_FURNACE:
+    if (slot >= 3)
+    {
+      slotItem = &user->inv[slot + 6];
+    }
+    else
+    {
+      for (uint32_t i = 0; i < chunk->furnaces.size(); i ++)
       {
-        //ToDo: Handle large chest
-      }
-      break;
-    case WINDOW_FURNACE:
-      if(slot>=3)
-      {
-        slotItem=&user->inv[slot+6];
-      }
-      else
-      {
-        for(uint32_t i = 0; i < chunk->furnaces.size(); i ++)
+        if (chunk->furnaces[i]->x == user->openInv.x &&
+            chunk->furnaces[i]->y == user->openInv.y &&
+            chunk->furnaces[i]->z == user->openInv.z)
         {
-          if(chunk->furnaces[i]->x == user->openInv.x &&
-             chunk->furnaces[i]->y == user->openInv.y &&
-             chunk->furnaces[i]->z == user->openInv.z)
-          {
-            slotItem = &chunk->furnaces[i]->items[slot];
-            tempFurnace = chunk->furnaces[i];
-          }
-        }
-        //Create furnace data if it doesn't exist
-        if(slotItem == NULL)
-        {
-          furnaceData *newFurnace = new furnaceData;
-          newFurnace->x = user->openInv.x;
-          newFurnace->y = user->openInv.y;
-          newFurnace->z = user->openInv.z;
-          newFurnace->burnTime = 0;
-          newFurnace->cookTime = 0;
-          chunk->furnaces.push_back(newFurnace);
-          slotItem = &newFurnace->items[slot];
-          tempFurnace = newFurnace;
+          slotItem = &chunk->furnaces[i]->items[slot];
+          tempFurnace = chunk->furnaces[i];
         }
       }
-      break;
-    case WINDOW_WORKBENCH:
-      if(slot > 9)
+      //Create furnace data if it doesn't exist
+      if (slotItem == NULL)
       {
-        slotItem=&user->inv[slot-1];
+        furnaceData* newFurnace = new furnaceData;
+        newFurnace->x = user->openInv.x;
+        newFurnace->y = user->openInv.y;
+        newFurnace->z = user->openInv.z;
+        newFurnace->burnTime = 0;
+        newFurnace->cookTime = 0;
+        chunk->furnaces.push_back(newFurnace);
+        slotItem = &newFurnace->items[slot];
+        tempFurnace = newFurnace;
       }
-      else
-      {
-        slotItem=&currentInventory->workbench[slot];
-      }
-      break;
+    }
+    break;
+  case WINDOW_WORKBENCH:
+    if (slot > 9)
+    {
+      slotItem = &user->inv[slot - 1];
+    }
+    else
+    {
+      slotItem = &currentInventory->workbench[slot];
+    }
+    break;
   }
-  
+
   bool workbenchCrafting = false;
   bool playerCrafting    = false;
 
-  if(windowID==WINDOW_PLAYER && slot >= 5 && slot <= 8){
+  if (windowID == WINDOW_PLAYER && slot >= 5 && slot <= 8)
+  {
     // Armour slots are a strange case. Only a quantity of one should be allowed, so this must be checked for.
-    if(slotItem->getType() == -1 && user->inventoryHolding.getType()>0){
-      if(canBeArmour(slot, user->inventoryHolding.getType())){
+    if (slotItem->getType() == -1 && user->inventoryHolding.getType() > 0)
+    {
+      if (canBeArmour(slot, user->inventoryHolding.getType()))
+      {
         slotItem->setType(user->inventoryHolding.getType());
         slotItem->setHealth(user->inventoryHolding.getHealth());
         slotItem->setCount(1);
         user->inventoryHolding.decCount();
-      }else{
+      }
+      else
+      {
         slotItem->decCount(0);
         user->inventoryHolding.decCount(0); // Refresh both
       }
-    }else if (slotItem->getType()>0 && user->inventoryHolding.getType()==-1){
+    }
+    else if (slotItem->getType() > 0 && user->inventoryHolding.getType() == -1)
+    {
       user->inventoryHolding.setType(slotItem->getType());
       user->inventoryHolding.setCount(slotItem->getCount());
       user->inventoryHolding.setHealth(slotItem->getHealth());
       slotItem->setType(-1);
 
-    }else if( slotItem->getType()>0 && user->inventoryHolding.getType()>0 && user->inventoryHolding.getCount() == 1){
-      if(canBeArmour(slot, user->inventoryHolding.getType())){
+    }
+    else if (slotItem->getType() > 0 && user->inventoryHolding.getType() > 0 && user->inventoryHolding.getCount() == 1)
+    {
+      if (canBeArmour(slot, user->inventoryHolding.getType()))
+      {
         uint16_t t_type = slotItem->getType();
         uint8_t t_count = slotItem->getCount();
         uint16_t t_health = slotItem->getHealth();
@@ -617,7 +673,9 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
         user->inventoryHolding.setCount(t_count);
         user->inventoryHolding.setHealth(t_health);
         user->inventoryHolding.setType(t_type);
-      }else{
+      }
+      else
+      {
         slotItem->decCount(0);
         user->inventoryHolding.decCount(0); // Refresh both
       }
@@ -625,41 +683,41 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
     setSlot(user, WINDOW_CURSOR, 0, user->inventoryHolding.getType(), user->inventoryHolding.getCount(), user->inventoryHolding.getHealth());
     return false;
   }
-  
+
 
   //Empty slot and holding something
-  if((slotItem->getType()==-1 || (slotItem->getType() == user->inventoryHolding.getType() && slotItem->getHealth() == user->inventoryHolding.getHealth() && slotItem->getCount() < 64) ) && user->inventoryHolding.getType() != -1)
+  if ((slotItem->getType() == -1 || (slotItem->getType() == user->inventoryHolding.getType() && slotItem->getHealth() == user->inventoryHolding.getHealth() && slotItem->getCount() < 64)) && user->inventoryHolding.getType() != -1)
   {
     //If accessing crafting output slot
-    if(slotItem->getType() != -1 && (windowID == WINDOW_WORKBENCH || windowID == WINDOW_PLAYER) && slot == 0)
+    if (slotItem->getType() != -1 && (windowID == WINDOW_WORKBENCH || windowID == WINDOW_PLAYER) && slot == 0)
     {
-      if(user->inventoryHolding.getType() == slotItem->getType() && 64-user->inventoryHolding.getCount() >= slotItem->getCount())
+      if (user->inventoryHolding.getType() == slotItem->getType() && 64 - user->inventoryHolding.getCount() >= slotItem->getCount())
       {
         user->inventoryHolding.decCount(-slotItem->getCount());
-        if(windowID == WINDOW_WORKBENCH)
+        if (windowID == WINDOW_WORKBENCH)
         {
-          for(uint8_t workbenchSlot = 1; workbenchSlot < 10; workbenchSlot++)
+          for (uint8_t workbenchSlot = 1; workbenchSlot < 10; workbenchSlot++)
           {
-            if(currentInventory->workbench[workbenchSlot].getType() != -1)
+            if (currentInventory->workbench[workbenchSlot].getType() != -1)
             {
               currentInventory->workbench[workbenchSlot].decCount();
-              setSlot(user, windowID, workbenchSlot, currentInventory->workbench[workbenchSlot].getType(), 
-                                                     currentInventory->workbench[workbenchSlot].getCount(), 
-                                                     currentInventory->workbench[workbenchSlot].getHealth());
+              setSlot(user, windowID, workbenchSlot, currentInventory->workbench[workbenchSlot].getType(),
+                      currentInventory->workbench[workbenchSlot].getCount(),
+                      currentInventory->workbench[workbenchSlot].getHealth());
             }
           }
           workbenchCrafting = true;
         }
         else
         {
-          for(uint8_t playerSlot = 1; playerSlot < 5; playerSlot++)
+          for (uint8_t playerSlot = 1; playerSlot < 5; playerSlot++)
           {
-            if(user->inv[playerSlot].getType() != -1)
+            if (user->inv[playerSlot].getType() != -1)
             {
               user->inv[playerSlot].decCount();
-              setSlot(user, windowID, playerSlot, user->inv[playerSlot].getType(), 
-                                                  user->inv[playerSlot].getCount(), 
-                                                  user->inv[playerSlot].getHealth());
+              setSlot(user, windowID, playerSlot, user->inv[playerSlot].getType(),
+                      user->inv[playerSlot].getCount(),
+                      user->inv[playerSlot].getHealth());
             }
           }
           playerCrafting = true;
@@ -671,48 +729,48 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
       //ToDo: Make sure we have room for the items!
 
       //Make sure not putting anything to the crafting space
-      if((windowID != WINDOW_WORKBENCH && windowID != WINDOW_PLAYER) || slot != 0)
+      if ((windowID != WINDOW_WORKBENCH && windowID != WINDOW_PLAYER) || slot != 0)
       {
-        int16_t addCount = (64-slotItem->getCount()>=user->inventoryHolding.getCount())?user->inventoryHolding.getCount():64-slotItem->getCount();
+        int16_t addCount = (64 - slotItem->getCount() >= user->inventoryHolding.getCount()) ? user->inventoryHolding.getCount() : 64 - slotItem->getCount();
 
-        slotItem->decCount(0-((rightClick)?1:addCount));
+        slotItem->decCount(0 - ((rightClick) ? 1 : addCount));
         slotItem->setHealth(user->inventoryHolding.getHealth());
         slotItem->setType(user->inventoryHolding.getType());
 
-        user->inventoryHolding.decCount((rightClick)?1:addCount);
+        user->inventoryHolding.decCount((rightClick) ? 1 : addCount);
       }
     }
-    
+
   }
-  else if(user->inventoryHolding.getType() == -1)
+  else if (user->inventoryHolding.getType() == -1)
   {
     //If accessing crafting output slot, remove from input!
-    if(slotItem->getType() != -1 && (windowID == WINDOW_WORKBENCH || windowID == WINDOW_PLAYER) && slot == 0)
+    if (slotItem->getType() != -1 && (windowID == WINDOW_WORKBENCH || windowID == WINDOW_PLAYER) && slot == 0)
     {
       user->inventoryHolding.setType(slotItem->getType());
       user->inventoryHolding.setCount(slotItem->getCount());
       user->inventoryHolding.setHealth(slotItem->getHealth());
 
-      if(windowID == WINDOW_WORKBENCH)
+      if (windowID == WINDOW_WORKBENCH)
       {
-        for(uint8_t workbenchSlot = 1; workbenchSlot < 10; workbenchSlot++)
+        for (uint8_t workbenchSlot = 1; workbenchSlot < 10; workbenchSlot++)
         {
-          if(currentInventory->workbench[workbenchSlot].getType() != -1)
+          if (currentInventory->workbench[workbenchSlot].getType() != -1)
           {
             currentInventory->workbench[workbenchSlot].decCount();
 
-            setSlot(user, windowID, workbenchSlot,currentInventory->workbench[workbenchSlot].getType(), 
-                                                  currentInventory->workbench[workbenchSlot].getCount(), 
-                                                  currentInventory->workbench[workbenchSlot].getHealth());
+            setSlot(user, windowID, workbenchSlot, currentInventory->workbench[workbenchSlot].getType(),
+                    currentInventory->workbench[workbenchSlot].getCount(),
+                    currentInventory->workbench[workbenchSlot].getHealth());
           }
         }
         workbenchCrafting = true;
       }
       else
       {
-        for(uint8_t playerSlot = 1; playerSlot < 5; playerSlot++)
+        for (uint8_t playerSlot = 1; playerSlot < 5; playerSlot++)
         {
-          if(user->inv[playerSlot].getType() != -1)
+          if (user->inv[playerSlot].getType() != -1)
           {
             user->inv[playerSlot].decCount();
           }
@@ -725,23 +783,23 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
       user->inventoryHolding.setType(slotItem->getType());
       user->inventoryHolding.setHealth(slotItem->getHealth());
       user->inventoryHolding.setCount(slotItem->getCount());
-      if(rightClick == 1)
+      if (rightClick == 1)
       {
-        user->inventoryHolding.decCount(slotItem->getCount()>>1);
+        user->inventoryHolding.decCount(slotItem->getCount() >> 1);
       }
 
       slotItem->decCount(user->inventoryHolding.getCount());
-      if(slotItem->getCount() == 0)
+      if (slotItem->getCount() == 0)
       {
         slotItem->setHealth(0);
         slotItem->setType(-1);
-      }      
+      }
     }
   }
   else
   {
     //Swap items if holding something and clicking another, not with craft slot
-    if((windowID != WINDOW_WORKBENCH && windowID != WINDOW_PLAYER) || slot != 0)
+    if ((windowID != WINDOW_WORKBENCH && windowID != WINDOW_PLAYER) || slot != 0)
     {
       int16_t type = slotItem->getType();
       int8_t count = slotItem->getCount();
@@ -752,9 +810,9 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
       user->inventoryHolding.setType(type);
       user->inventoryHolding.setCount(count);
       user->inventoryHolding.setHealth(health);
-    }      
+    }
   }
-  
+
   //Update slot
   setSlot(user, windowID, slot, slotItem->getType(), slotItem->getCount(), slotItem->getHealth());
 
@@ -763,9 +821,9 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
 
 
   //Check if crafting
-  if((windowID == WINDOW_WORKBENCH && slot < 10 && slot > 0) || workbenchCrafting)
+  if ((windowID == WINDOW_WORKBENCH && slot < 10 && slot > 0) || workbenchCrafting)
   {
-    if(doCraft(currentInventory->workbench, 3, 3))
+    if (doCraft(currentInventory->workbench, 3, 3))
     {
       setSlot(user, windowID, 0, currentInventory->workbench[0].getType(), currentInventory->workbench[0].getCount(), currentInventory->workbench[0].getHealth());
     }
@@ -775,9 +833,9 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
       setSlot(user, windowID, 0, -1, 0, 0);
     }
   }
-  else if((windowID == WINDOW_PLAYER && slot < 5 && slot > 0) || playerCrafting)
+  else if ((windowID == WINDOW_PLAYER && slot < 5 && slot > 0) || playerCrafting)
   {
-    if(doCraft(user->inv, 2, 2))
+    if (doCraft(user->inv, 2, 2))
     {
       setSlot(user, windowID, 0, user->inv[0].getType(), user->inv[0].getCount(), user->inv[0].getHealth());
     }
@@ -788,7 +846,7 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
     }
   }
   //If handling the "fuel" slot
-  else if(windowID == WINDOW_FURNACE && (slot == 1 || slot == 0))
+  else if (windowID == WINDOW_FURNACE && (slot == 1 || slot == 0))
   {
     tempFurnace->map = user->pos.map;
     Mineserver::get()->furnaceManager()->handleActivity(tempFurnace);
@@ -799,10 +857,10 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
   switch(windowID)
   {
     case WINDOW_WORKBENCH:
-      if(slot < 10)        
+      if(slot < 10)
       {
         for(uint32_t i = 0; i < otherUsers->size(); i++)
-        {          
+        {
           (*otherUsers)[i]->buffer << (int8_t)PACKET_SET_SLOT << (int8_t)windowID << (int16_t)slot << (int16_t)slotItem->type;
           if(slotItem->type != -1)
           {
@@ -814,7 +872,7 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
 
     case WINDOW_CHEST:
       chunk->changed = true;
-      if(slot < 27)        
+      if(slot < 27)
       {
         for(uint32_t i = 0; i < otherUsers->size(); i++)
         {
@@ -832,7 +890,7 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
 
     case WINDOW_FURNACE:
       chunk->changed = true;
-      if(slot < 3)        
+      if(slot < 3)
       {
         for(uint32_t i = 0; i < otherUsers->size(); i++)
         {
@@ -855,106 +913,106 @@ bool Inventory::windowClick(User *user,int8_t windowID, int16_t slot, int8_t rig
 }
 
 
-bool Inventory::windowOpen(User *user, int8_t type, int32_t x, int32_t y, int32_t z)
+bool Inventory::windowOpen(User* user, int8_t type, int32_t x, int32_t y, int32_t z)
 {
-  sChunk* chunk = Mineserver::get()->map(user->pos.map)->chunks.getChunk(blockToChunk(x),blockToChunk(z));
+  sChunk* chunk = Mineserver::get()->map(user->pos.map)->chunks.getChunk(blockToChunk(x), blockToChunk(z));
 
-  if(chunk == NULL)
+  if (chunk == NULL)
   {
     return false;
   }
 
-  onwindowOpen(user,type,x,y,z);
+  onwindowOpen(user, type, x, y, z);
 
-  switch(type)
+  switch (type)
   {
-    case WINDOW_CHEST:    
-      user->buffer << (int8_t)PACKET_OPEN_WINDOW << (int8_t)WINDOW_CHEST  << (int8_t)INVENTORYTYPE_CHEST << std::string("Chest") << (int8_t)27;
+  case WINDOW_CHEST:
+    user->buffer << (int8_t)PACKET_OPEN_WINDOW << (int8_t)WINDOW_CHEST  << (int8_t)INVENTORYTYPE_CHEST << std::string("Chest") << (int8_t)27;
 
-      for(uint32_t i = 0;i < chunk->chests.size(); i++)
+    for (uint32_t i = 0; i < chunk->chests.size(); i++)
+    {
+      if (chunk->chests[i]->x == x && chunk->chests[i]->y == y && chunk->chests[i]->z == z)
       {
-        if(chunk->chests[i]->x == x && chunk->chests[i]->y == y && chunk->chests[i]->z == z)
+        for (int j = 0; j < 27; j++)
         {
-          for(int j = 0;j < 27; j++)
+          if (chunk->chests[i]->items[j].getType() != -1)
           {
-            if(chunk->chests[i]->items[j].getType() != -1)
-            {
-              user->buffer << (int8_t)PACKET_SET_SLOT << (int8_t)WINDOW_CHEST << (int16_t)j << (int16_t)chunk->chests[i]->items[j].getType()
-                           << (int8_t)(chunk->chests[i]->items[j].getCount()) << (int16_t)chunk->chests[i]->items[j].getHealth();
-            }
+            user->buffer << (int8_t)PACKET_SET_SLOT << (int8_t)WINDOW_CHEST << (int16_t)j << (int16_t)chunk->chests[i]->items[j].getType()
+                         << (int8_t)(chunk->chests[i]->items[j].getCount()) << (int16_t)chunk->chests[i]->items[j].getHealth();
           }
-          break;
         }
+        break;
       }
-      break;
-    case WINDOW_WORKBENCH:
-      user->buffer << (int8_t)PACKET_OPEN_WINDOW << (int8_t)WINDOW_WORKBENCH  << (int8_t)INVENTORYTYPE_WORKBENCH << std::string("Workbench") << (int8_t)0;
+    }
+    break;
+  case WINDOW_WORKBENCH:
+    user->buffer << (int8_t)PACKET_OPEN_WINDOW << (int8_t)WINDOW_WORKBENCH  << (int8_t)INVENTORYTYPE_WORKBENCH << std::string("Workbench") << (int8_t)0;
 
-      for(uint32_t i = 0; i < openWorkbenches.size(); i++)
+    for (uint32_t i = 0; i < openWorkbenches.size(); i++)
+    {
+      if (openWorkbenches[i]->x == user->openInv.x &&
+          openWorkbenches[i]->y == user->openInv.y &&
+          openWorkbenches[i]->z == user->openInv.z)
       {
-        if(openWorkbenches[i]->x == user->openInv.x &&
-           openWorkbenches[i]->y == user->openInv.y &&
-           openWorkbenches[i]->z == user->openInv.z)
+        for (int j = 0; j < 10; j++)
         {
-          for(int j = 0; j < 10; j++)
+          if (openWorkbenches[i]->workbench[j].getType() != -1)
           {
-            if(openWorkbenches[i]->workbench[j].getType() != -1)
-            {
-              user->buffer << (int8_t)PACKET_SET_SLOT << (int8_t)WINDOW_WORKBENCH << (int16_t)j << (int16_t)openWorkbenches[i]->workbench[j].getType()
-                           << (int8_t)(openWorkbenches[i]->workbench[j].getCount()) << (int16_t)openWorkbenches[i]->workbench[j].getHealth();
-            }
+            user->buffer << (int8_t)PACKET_SET_SLOT << (int8_t)WINDOW_WORKBENCH << (int16_t)j << (int16_t)openWorkbenches[i]->workbench[j].getType()
+                         << (int8_t)(openWorkbenches[i]->workbench[j].getCount()) << (int16_t)openWorkbenches[i]->workbench[j].getHealth();
           }
-          break;
         }
+        break;
       }
-      break;
-    case WINDOW_FURNACE:
-      
-      user->buffer << (int8_t)PACKET_OPEN_WINDOW << (int8_t)WINDOW_FURNACE  << (int8_t)INVENTORYTYPE_FURNACE << std::string("Furnace") << (int8_t)0;
+    }
+    break;
+  case WINDOW_FURNACE:
 
-      for(uint32_t i = 0;i < chunk->furnaces.size(); i++)
+    user->buffer << (int8_t)PACKET_OPEN_WINDOW << (int8_t)WINDOW_FURNACE  << (int8_t)INVENTORYTYPE_FURNACE << std::string("Furnace") << (int8_t)0;
+
+    for (uint32_t i = 0; i < chunk->furnaces.size(); i++)
+    {
+      if (chunk->furnaces[i]->x == x && chunk->furnaces[i]->y == y && chunk->furnaces[i]->z == z)
       {
-        if(chunk->furnaces[i]->x == x && chunk->furnaces[i]->y == y && chunk->furnaces[i]->z == z)
+        for (int j = 0; j < 3; j++)
         {
-          for(int j = 0; j < 3; j++)
+          if (chunk->furnaces[i]->items[j].getType() != -1)
           {
-            if(chunk->furnaces[i]->items[j].getType() != -1)
-            {
-              user->buffer << (int8_t)PACKET_SET_SLOT << (int8_t)WINDOW_FURNACE << (int16_t)j << (int16_t)chunk->furnaces[i]->items[j].getType()
-                           << (int8_t)(chunk->furnaces[i]->items[j].getCount()) << (int16_t)chunk->furnaces[i]->items[j].getHealth();
-            }
+            user->buffer << (int8_t)PACKET_SET_SLOT << (int8_t)WINDOW_FURNACE << (int16_t)j << (int16_t)chunk->furnaces[i]->items[j].getType()
+                         << (int8_t)(chunk->furnaces[i]->items[j].getCount()) << (int16_t)chunk->furnaces[i]->items[j].getHealth();
           }
-          user->buffer << (int8_t)PACKET_PROGRESS_BAR << (int8_t)WINDOW_FURNACE << (int16_t)0 << (int16_t)(chunk->furnaces[i]->cookTime*18);
-          user->buffer << (int8_t)PACKET_PROGRESS_BAR << (int8_t)WINDOW_FURNACE << (int16_t)1 << (int16_t)(chunk->furnaces[i]->burnTime*3);
-          break;
         }
+        user->buffer << (int8_t)PACKET_PROGRESS_BAR << (int8_t)WINDOW_FURNACE << (int16_t)0 << (int16_t)(chunk->furnaces[i]->cookTime * 18);
+        user->buffer << (int8_t)PACKET_PROGRESS_BAR << (int8_t)WINDOW_FURNACE << (int16_t)1 << (int16_t)(chunk->furnaces[i]->burnTime * 3);
+        break;
       }
-      break;
+    }
+    break;
   }
 
   return true;
 }
 
-bool Inventory::isSpace(User *user,int16_t itemID, char count)
+bool Inventory::isSpace(User* user, int16_t itemID, char count)
 {
   int leftToFit = count;
-  for(uint8_t i = 0; i < 36; i++)
+  for (uint8_t i = 0; i < 36; i++)
   {
-    Item *slot=&user->inv[i+9];
-    if(slot->getType() == -1)
+    Item* slot = &user->inv[i + 9];
+    if (slot->getType() == -1)
     {
       return true;
     }
 
-    if(slot->getType() == itemID)
+    if (slot->getType() == itemID)
     {
-      if(64-slot->getCount() >= leftToFit)
+      if (64 - slot->getCount() >= leftToFit)
       {
         return true;
       }
-      else if(64-slot->getCount() > 0)
+      else if (64 - slot->getCount() > 0)
       {
-        leftToFit -= 64-slot->getCount();
+        leftToFit -= 64 - slot->getCount();
       }
     }
   }
@@ -962,24 +1020,24 @@ bool Inventory::isSpace(User *user,int16_t itemID, char count)
 }
 
 
-bool Inventory::addItems(User *user,int16_t itemID, int16_t count, int16_t health)
+bool Inventory::addItems(User* user, int16_t itemID, int16_t count, int16_t health)
 {
   bool checkingTaskbar = true;
 
-  for(uint8_t i = 36-9; i < 36-9 || checkingTaskbar; i++)
+  for (uint8_t i = 36 - 9; i < 36 - 9 || checkingTaskbar; i++)
   {
     //First, the "task bar"
-    if(i == 36)
+    if (i == 36)
     {
       checkingTaskbar = false;
-      i=0;
+      i = 0;
     }
 
     //The main slots are in range 9-44
-    Item *slot = &user->inv[i+9];
+    Item* slot = &user->inv[i + 9];
 
     //If slot empty, put item there
-    if(slot->getType() == -1)
+    if (slot->getType() == -1)
     {
       slot->setType(itemID);
       slot->setCount(count);
@@ -988,21 +1046,22 @@ bool Inventory::addItems(User *user,int16_t itemID, int16_t count, int16_t healt
     }
 
     //If same item type
-    if(slot->getType() == itemID)
+    if (slot->getType() == itemID)
     {
-      if(slot->getHealth() == health){
+      if (slot->getHealth() == health)
+      {
         //Put to the stack
-        if(64-slot->getCount() >= count)
+        if (64 - slot->getCount() >= count)
         {
           slot->setType(itemID);
           slot->decCount(-count);
           break;
         }
-      //Put some of the items to this stack and continue searching for space
-        else if(64-slot->getCount() > 0)
+        //Put some of the items to this stack and continue searching for space
+        else if (64 - slot->getCount() > 0)
         {
           slot->setType(itemID);
-          count -= 64-slot->getCount();
+          count -= 64 - slot->getCount();
           slot->setCount(64);
         }
       }
@@ -1012,51 +1071,51 @@ bool Inventory::addItems(User *user,int16_t itemID, int16_t count, int16_t healt
   return true;
 }
 
-bool Inventory::windowClose(User *user,int8_t windowID)
+bool Inventory::windowClose(User* user, int8_t windowID)
 {
   //If still holding something, dump the items to ground
-  if(user->inventoryHolding.getType() != -1)
+  if (user->inventoryHolding.getType() != -1)
   {
-    Mineserver::get()->map(user->pos.map)->createPickupSpawn((int)user->pos.x, (int)user->pos.y, (int)user->pos.z, 
-                                                user->inventoryHolding.getType(), user->inventoryHolding.getCount(),
-                                                user->inventoryHolding.getHealth(),user);
+    Mineserver::get()->map(user->pos.map)->createPickupSpawn((int)user->pos.x, (int)user->pos.y, (int)user->pos.z,
+        user->inventoryHolding.getType(), user->inventoryHolding.getCount(),
+        user->inventoryHolding.getHealth(), user);
     user->inventoryHolding.setType(-1);
   }
 
-  if(user->isOpenInv)
+  if (user->isOpenInv)
   {
-    onwindowClose(user,user->openInv.type, user->openInv.x, user->openInv.y, user->openInv.z);
+    onwindowClose(user, user->openInv.type, user->openInv.x, user->openInv.y, user->openInv.z);
   }
 
   return true;
 }
 
-bool Inventory::onwindowOpen(User *user,int8_t type, int32_t x, int32_t y, int32_t z)
+bool Inventory::onwindowOpen(User* user, int8_t type, int32_t x, int32_t y, int32_t z)
 {
 
-  if(user->isOpenInv)
+  if (user->isOpenInv)
   {
-    onwindowClose(user,user->openInv.type, user->openInv.x, user->openInv.y, user->openInv.z);
+    onwindowClose(user, user->openInv.type, user->openInv.x, user->openInv.y, user->openInv.z);
   }
 
-  std::vector<OpenInventory *> *inv;
-  switch(type)
+  std::vector<OpenInventory*> *inv;
+  switch (type)
   {
-    case WINDOW_CHEST:
-      inv = &openChests;
-      break;
-    case WINDOW_FURNACE:
-      inv = &openFurnaces;
-      break;
-    case WINDOW_WORKBENCH:
-      inv = &openWorkbenches;
-      break;
+  case WINDOW_CHEST:
+    inv = &openChests;
+    break;
+  case WINDOW_FURNACE:
+    inv = &openFurnaces;
+    break;
+  case WINDOW_WORKBENCH:
+    inv = &openWorkbenches;
+    break;
   }
-  for(uint32_t i = 0; i < inv->size(); i++)
+  for (uint32_t i = 0; i < inv->size(); i++)
   {
-    if((*inv)[i]->x == user->openInv.x &&
-       (*inv)[i]->y == user->openInv.y &&
-       (*inv)[i]->z == user->openInv.z)
+    if ((*inv)[i]->x == user->openInv.x &&
+        (*inv)[i]->y == user->openInv.y &&
+        (*inv)[i]->z == user->openInv.z)
     {
       (*inv)[i]->users.push_back(user);
       user->isOpenInv = true;
@@ -1065,7 +1124,7 @@ bool Inventory::onwindowOpen(User *user,int8_t type, int32_t x, int32_t y, int32
   }
 
   //If the inventory not yet opened, create it
-  OpenInventory *newInv = new OpenInventory();
+  OpenInventory* newInv = new OpenInventory();
   newInv->type = type;
   newInv->x    = x;
   newInv->y    = y;
@@ -1080,11 +1139,11 @@ bool Inventory::onwindowOpen(User *user,int8_t type, int32_t x, int32_t y, int32
   return true;
 }
 
-bool Inventory::onwindowClose(User *user, int8_t type, int32_t x, int32_t y, int32_t z)
+bool Inventory::onwindowClose(User* user, int8_t type, int32_t x, int32_t y, int32_t z)
 {
   std::vector<OpenInventory*>* inv = NULL;
 
-  switch(type)
+  switch (type)
   {
   case WINDOW_CHEST:
     inv = &openChests;
@@ -1099,35 +1158,35 @@ bool Inventory::onwindowClose(User *user, int8_t type, int32_t x, int32_t y, int
     return false;
   }
 
-  for(uint32_t i = 0; i < inv->size(); i++)
+  for (uint32_t i = 0; i < inv->size(); i++)
   {
-    if((*inv)[i]->x == user->openInv.x &&
-       (*inv)[i]->y == user->openInv.y &&
-       (*inv)[i]->z == user->openInv.z)
+    if ((*inv)[i]->x == user->openInv.x &&
+        (*inv)[i]->y == user->openInv.y &&
+        (*inv)[i]->z == user->openInv.z)
     {
-      for(uint32_t j = 0; j < (*inv)[i]->users.size(); j++)
+      for (uint32_t j = 0; j < (*inv)[i]->users.size(); j++)
       {
-        if((*inv)[i]->users[j] == user)
+        if ((*inv)[i]->users[j] == user)
         {
-          (*inv)[i]->users.erase((*inv)[i]->users.begin()+j);
+          (*inv)[i]->users.erase((*inv)[i]->users.begin() + j);
 
-          if((*inv)[i]->users.size() == 0)
+          if ((*inv)[i]->users.size() == 0)
           {
             //Dump stuff to ground if workbench and no other users
-            if(type == WINDOW_WORKBENCH)
+            if (type == WINDOW_WORKBENCH)
             {
-              for(uint32_t slotNumber = 1; slotNumber < 10; slotNumber ++)
+              for (uint32_t slotNumber = 1; slotNumber < 10; slotNumber ++)
               {
-                if((*inv)[i]->workbench[slotNumber].getType() != -1)
+                if ((*inv)[i]->workbench[slotNumber].getType() != -1)
                 {
-                  Mineserver::get()->map(user->pos.map)->createPickupSpawn((int)user->pos.x, (int)user->pos.y, (int)user->pos.z, 
-                                                  (*inv)[i]->workbench[slotNumber].getType(), (*inv)[i]->workbench[slotNumber].getCount(),
-                                                  (*inv)[i]->workbench[slotNumber].getHealth(),user);
+                  Mineserver::get()->map(user->pos.map)->createPickupSpawn((int)user->pos.x, (int)user->pos.y, (int)user->pos.z,
+                      (*inv)[i]->workbench[slotNumber].getType(), (*inv)[i]->workbench[slotNumber].getCount(),
+                      (*inv)[i]->workbench[slotNumber].getHealth(), user);
                 }
               }
             }
-            delete (*inv)[i];
-            (*inv).erase((*inv).begin()+i);
+            delete(*inv)[i];
+            (*inv).erase((*inv).begin() + i);
           }
 
           user->isOpenInv = false;
@@ -1144,16 +1203,16 @@ bool Inventory::onwindowClose(User *user, int8_t type, int32_t x, int32_t y, int
 
 
 
-bool Inventory::doCraft(Item *slots, int8_t width, int8_t height)
+bool Inventory::doCraft(Item* slots, int8_t width, int8_t height)
 {
-  for(uint32_t i = 0; i < recipes.size(); i++)
+  for (uint32_t i = 0; i < recipes.size(); i++)
   {
     //Skip if recipe doesn't fit
-    if(width < recipes[i]->width || height < recipes[i]->height)
+    if (width < recipes[i]->width || height < recipes[i]->height)
     {
       continue;
     }
-    
+
     int8_t offsetX = 0, offsetY = 0;
 
     //Check for any possible position the recipe would fit
@@ -1164,23 +1223,24 @@ bool Inventory::doCraft(Item *slots, int8_t width, int8_t height)
       {
         bool mismatch = false;
         //Check for the recipe match on this position
-        for(int32_t recipePosX = 0; recipePosX < recipes[i]->width; recipePosX++)
+        for (int32_t recipePosX = 0; recipePosX < recipes[i]->width; recipePosX++)
         {
-          for(int32_t recipePosY = 0; recipePosY < recipes[i]->height; recipePosY++)
+          for (int32_t recipePosY = 0; recipePosY < recipes[i]->height; recipePosY++)
           {
-            if(slots[(recipePosY+offsetY)*width+recipePosX+1+offsetX].getType() != recipes[i]->slots[recipePosY*recipes[i]->width+recipePosX]->getType())
+            if (slots[(recipePosY + offsetY)*width + recipePosX + 1 + offsetX].getType() != recipes[i]->slots[recipePosY * recipes[i]->width + recipePosX]->getType())
             {
               mismatch = true;
               break;
             }
-            if(recipes[i]->slots[recipePosY*recipes[i]->width+recipePosX]->getHealth()!=-1)
+            if (recipes[i]->slots[recipePosY * recipes[i]->width + recipePosX]->getHealth() != -1)
             {
-              if(slots[(recipePosY+offsetY)*width+recipePosX+1+offsetX].getHealth() != recipes[i]->slots[recipePosY*recipes[i]->width+recipePosX]->getHealth()){
+              if (slots[(recipePosY + offsetY)*width + recipePosX + 1 + offsetX].getHealth() != recipes[i]->slots[recipePosY * recipes[i]->width + recipePosX]->getHealth())
+              {
                 mismatch = true;
                 break;
               }
             }
-            if(slots[(recipePosY+offsetY)*width+recipePosX+1+offsetX].getCount() < recipes[i]->slots[recipePosY*recipes[i]->width+recipePosX]->getCount())
+            if (slots[(recipePosY + offsetY)*width + recipePosX + 1 + offsetX].getCount() < recipes[i]->slots[recipePosY * recipes[i]->width + recipePosX]->getCount())
             {
               mismatch = true;
               break;
@@ -1189,19 +1249,19 @@ bool Inventory::doCraft(Item *slots, int8_t width, int8_t height)
         }
 
         //Found match!
-        if(!mismatch)
+        if (!mismatch)
         {
           //Check that other areas are empty!
           bool foundItem = false;
-          for(int32_t craftingPosX = 0; craftingPosX < width; craftingPosX++)
+          for (int32_t craftingPosX = 0; craftingPosX < width; craftingPosX++)
           {
-            for(int32_t craftingPosY = 0; craftingPosY < height; craftingPosY++)
+            for (int32_t craftingPosY = 0; craftingPosY < height; craftingPosY++)
             {
               //If not inside the recipe boundaries
-              if(craftingPosX < offsetX || craftingPosX>=offsetX+recipes[i]->width ||
-                 craftingPosY < offsetY || craftingPosY>=offsetY+recipes[i]->height)
+              if (craftingPosX < offsetX || craftingPosX >= offsetX + recipes[i]->width ||
+                  craftingPosY < offsetY || craftingPosY >= offsetY + recipes[i]->height)
               {
-                if(slots[(craftingPosY)*width+craftingPosX+1].getType() != -1)
+                if (slots[(craftingPosY)*width + craftingPosX + 1].getType() != -1)
                 {
                   foundItem = true;
                   break;
@@ -1209,7 +1269,7 @@ bool Inventory::doCraft(Item *slots, int8_t width, int8_t height)
               }
             }
           }
-          if(!foundItem)
+          if (!foundItem)
           {
             slots[0] = recipes[i]->output;
             return true;
@@ -1217,20 +1277,22 @@ bool Inventory::doCraft(Item *slots, int8_t width, int8_t height)
         }
 
         offsetX++;
-      } while(offsetX<=width-recipes[i]->width);
+      }
+      while (offsetX <= width - recipes[i]->width);
 
       offsetY++;
-    } while(offsetY<=height-recipes[i]->height);
+    }
+    while (offsetY <= height - recipes[i]->height);
   }
 
   return false;
 }
 
-bool Inventory::setSlot(User *user, int8_t windowID, int16_t slot, int16_t itemID, int8_t count, int16_t health)
+bool Inventory::setSlot(User* user, int8_t windowID, int16_t slot, int16_t itemID, int8_t count, int16_t health)
 {
   //Mineserver::get()->logger()->log(1,"Setslot: " + dtos(slot) + " to " + dtos(itemID) + " (" + dtos(count) + ") health: " + dtos(health));
   user->buffer << (int8_t)PACKET_SET_SLOT << (int8_t)windowID << (int16_t)slot   << (int16_t)itemID;
-  if(itemID != -1)
+  if (itemID != -1)
   {
     user->buffer << (int8_t)count << (int16_t)health;
   }
@@ -1239,121 +1301,121 @@ bool Inventory::setSlot(User *user, int8_t windowID, int16_t slot, int16_t itemI
 }
 
 
-int16_t Inventory::itemHealth(int16_t itemID, int8_t block, bool &rightUse)
+int16_t Inventory::itemHealth(int16_t itemID, int8_t block, bool& rightUse)
 {
-  int16_t health=0;
+  int16_t health = 0;
   rightUse = false;
-  switch(itemID)
+  switch (itemID)
   {
-    case ITEM_GOLD_AXE:
-    case ITEM_GOLD_PICKAXE:
-    case ITEM_GOLD_HOE:
-    case ITEM_GOLD_SPADE:
-      health = 33;
+  case ITEM_GOLD_AXE:
+  case ITEM_GOLD_PICKAXE:
+  case ITEM_GOLD_HOE:
+  case ITEM_GOLD_SPADE:
+    health = 33;
     break;
-    case ITEM_WOODEN_AXE:
-    case ITEM_WOODEN_PICKAXE:
-    case ITEM_WOODEN_HOE:
-    case ITEM_WOODEN_SPADE:
-      health = 60;
+  case ITEM_WOODEN_AXE:
+  case ITEM_WOODEN_PICKAXE:
+  case ITEM_WOODEN_HOE:
+  case ITEM_WOODEN_SPADE:
+    health = 60;
     break;
-    case ITEM_STONE_AXE:
-    case ITEM_STONE_PICKAXE:
-    case ITEM_STONE_HOE:
-    case ITEM_STONE_SPADE:
-    case ITEM_BOW:
-      health = 132;
+  case ITEM_STONE_AXE:
+  case ITEM_STONE_PICKAXE:
+  case ITEM_STONE_HOE:
+  case ITEM_STONE_SPADE:
+  case ITEM_BOW:
+    health = 132;
     break;
-    case ITEM_IRON_AXE:
-    case ITEM_IRON_PICKAXE:
-    case ITEM_IRON_HOE:
-    case ITEM_IRON_SPADE:
-      health = 251;
+  case ITEM_IRON_AXE:
+  case ITEM_IRON_PICKAXE:
+  case ITEM_IRON_HOE:
+  case ITEM_IRON_SPADE:
+    health = 251;
     break;
-    case ITEM_DIAMOND_AXE:
-    case ITEM_DIAMOND_PICKAXE:
-    case ITEM_DIAMOND_HOE:
-    case ITEM_DIAMOND_SPADE:
-      health = 1562;
+  case ITEM_DIAMOND_AXE:
+  case ITEM_DIAMOND_PICKAXE:
+  case ITEM_DIAMOND_HOE:
+  case ITEM_DIAMOND_SPADE:
+    health = 1562;
     break;
 
-    default:
-      health = 0;
+  default:
+    health = 0;
   }
 
 
-  switch(itemID)
+  switch (itemID)
   {
-    case ITEM_WOODEN_AXE:
-    case ITEM_GOLD_AXE:
-    case ITEM_STONE_AXE:
-    case ITEM_IRON_AXE:
-    case ITEM_DIAMOND_AXE:
-     if(block == BLOCK_WOOD || block == BLOCK_PLANK)
-     {
-       rightUse = true;
-     }
-    break;
-    
-    case ITEM_WOODEN_PICKAXE:
-    case ITEM_STONE_PICKAXE:
-    case ITEM_GOLD_PICKAXE:
-    case ITEM_IRON_PICKAXE:
-    case ITEM_DIAMOND_PICKAXE:
-     switch(block)
-     {
-       case BLOCK_STONE:
-       case BLOCK_COBBLESTONE:
-       case BLOCK_MOSSY_COBBLESTONE:
-       case BLOCK_COAL_ORE:
-       case BLOCK_IRON_ORE:
-       case BLOCK_GOLD_ORE:
-       case BLOCK_DIAMOND_ORE:
-       case BLOCK_OBSIDIAN:
-       case BLOCK_GLOWSTONE:
-       case BLOCK_NETHERSTONE:
-       case BLOCK_WOODEN_STAIRS:
-       case BLOCK_COBBLESTONE_STAIRS:
-       case BLOCK_IRON_DOOR:
-       case BLOCK_ICE:
-        rightUse = true;
-       break;
-       default:
-         rightUse = false;
-     }
-    break;
-    
-    case ITEM_WOODEN_HOE:
-    case ITEM_GOLD_HOE:
-    case ITEM_STONE_HOE:
-    case ITEM_IRON_HOE:
-    case ITEM_DIAMOND_HOE:
-      //ToDo: add this
-      rightUse = false;
-    break;
-          
-    case ITEM_WOODEN_SPADE:
-    case ITEM_GOLD_SPADE:          
-    case ITEM_STONE_SPADE:
-    case ITEM_IRON_SPADE:
-    case ITEM_DIAMOND_SPADE:
-     switch(block)
-     {
-       case BLOCK_DIRT:
-       case BLOCK_GRASS:
-       case BLOCK_SAND:
-       case BLOCK_GRAVEL:
-       case BLOCK_CLAY:
-       case BLOCK_SNOW:
-        rightUse = true;
-       break;
-       default:
-         rightUse = false;
-     }
+  case ITEM_WOODEN_AXE:
+  case ITEM_GOLD_AXE:
+  case ITEM_STONE_AXE:
+  case ITEM_IRON_AXE:
+  case ITEM_DIAMOND_AXE:
+    if (block == BLOCK_WOOD || block == BLOCK_PLANK)
+    {
+      rightUse = true;
+    }
     break;
 
+  case ITEM_WOODEN_PICKAXE:
+  case ITEM_STONE_PICKAXE:
+  case ITEM_GOLD_PICKAXE:
+  case ITEM_IRON_PICKAXE:
+  case ITEM_DIAMOND_PICKAXE:
+    switch (block)
+    {
+    case BLOCK_STONE:
+    case BLOCK_COBBLESTONE:
+    case BLOCK_MOSSY_COBBLESTONE:
+    case BLOCK_COAL_ORE:
+    case BLOCK_IRON_ORE:
+    case BLOCK_GOLD_ORE:
+    case BLOCK_DIAMOND_ORE:
+    case BLOCK_OBSIDIAN:
+    case BLOCK_GLOWSTONE:
+    case BLOCK_NETHERSTONE:
+    case BLOCK_WOODEN_STAIRS:
+    case BLOCK_COBBLESTONE_STAIRS:
+    case BLOCK_IRON_DOOR:
+    case BLOCK_ICE:
+      rightUse = true;
+      break;
     default:
-      health = 0;
+      rightUse = false;
+    }
+    break;
+
+  case ITEM_WOODEN_HOE:
+  case ITEM_GOLD_HOE:
+  case ITEM_STONE_HOE:
+  case ITEM_IRON_HOE:
+  case ITEM_DIAMOND_HOE:
+    //ToDo: add this
+    rightUse = false;
+    break;
+
+  case ITEM_WOODEN_SPADE:
+  case ITEM_GOLD_SPADE:
+  case ITEM_STONE_SPADE:
+  case ITEM_IRON_SPADE:
+  case ITEM_DIAMOND_SPADE:
+    switch (block)
+    {
+    case BLOCK_DIRT:
+    case BLOCK_GRASS:
+    case BLOCK_SAND:
+    case BLOCK_GRAVEL:
+    case BLOCK_CLAY:
+    case BLOCK_SNOW:
+      rightUse = true;
+      break;
+    default:
+      rightUse = false;
+    }
+    break;
+
+  default:
+    health = 0;
   }
   return health;
 }

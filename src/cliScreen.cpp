@@ -33,8 +33,8 @@
 #include <stdio.h>
 
 #ifndef WIN32
-  #include <poll.h>
-  #include <unistd.h>
+#include <poll.h>
+#include <unistd.h>
 #endif
 
 #include "chat.h"
@@ -45,7 +45,7 @@
 #ifdef WIN32
 DWORD WINAPI CliScreen::_stdinThreadProc(LPVOID lpParameter)
 {
-  return ((CliScreen *)lpParameter)->stdinThreadProc();
+  return ((CliScreen*)lpParameter)->stdinThreadProc();
 }
 
 DWORD WINAPI CliScreen::stdinThreadProc()
@@ -64,7 +64,7 @@ DWORD WINAPI CliScreen::stdinThreadProc()
     }
 
     EnterCriticalSection(&ccAccess);
-  currentCommand += s + "\n";
+    currentCommand += s + "\n";
     _hasCommand = true;
     LeaveCriticalSection(&ccAccess);
   }
@@ -76,10 +76,10 @@ void CliScreen::init(std::string version)
 #ifdef WIN32
   _hasCommand = false;
   InitializeCriticalSection(&ccAccess);
-  stdinThread = CreateThread(NULL, 0, _stdinThreadProc, (void *)this, 0, NULL);
+  stdinThread = CreateThread(NULL, 0, _stdinThreadProc, (void*)this, 0, NULL);
 #endif
 
-  static_cast<Hook3<bool,int,const char*,const char*>*>(Mineserver::get()->plugin()->getHook("LogPost"))->addCallback(&CliScreen::Log);
+  static_cast<Hook3<bool, int, const char*, const char*>*>(Mineserver::get()->plugin()->getHook("LogPost"))->addCallback(&CliScreen::Log);
   static_cast<Hook0<bool>*>(Mineserver::get()->plugin()->getHook("Timer200"))->addCallback(&CliScreen::CheckForCommand);
 }
 
@@ -96,7 +96,7 @@ void CliScreen::log(LogType::LogType type, const std::string& source, const std:
   std::cout << "[" << currentTimestamp(true) << "] " << source << ": " << message << std::endl;
 }
 
-void CliScreen::updatePlayerList(std::vector<User *> users)
+void CliScreen::updatePlayerList(std::vector<User*> users)
 {
 }
 
@@ -125,7 +125,7 @@ bool CliScreen::hasCommand()
 
     if (readchar == '\n')
     {
-       return true;
+      return true;
     }
     else
     {

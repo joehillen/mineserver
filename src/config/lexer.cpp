@@ -88,9 +88,9 @@ bool ConfigLexer::get_token(int* type, std::string* data)
   {
     while (((buf >= 'a') && (buf <= 'z')) || ((buf >= 'A') && (buf <= 'Z')) || ((buf >= '0') && (buf <= '9')) || (buf == '.') || (buf == '_'))
     {
-    data->append(&buf, 1);
-    m_scanner->move(1);
-    buf = m_scanner->get();
+      data->append(&buf, 1);
+      m_scanner->move(1);
+      buf = m_scanner->get();
     }
 
     // Check for boolean literal is true and false
@@ -114,18 +114,18 @@ bool ConfigLexer::get_token(int* type, std::string* data)
 
     while (((buf >= '0') && (buf <= '9')) || ((buf == '.') && (found == false)) || (buf == '_'))
     {
-    if (buf == '.')
+      if (buf == '.')
       {
         found = true;
       }
 
-    if (buf != '_')
+      if (buf != '_')
       {
         data->append(&buf, 1);
       }
 
-    m_scanner->move(1);
-    buf = m_scanner->get();
+      m_scanner->move(1);
+      buf = m_scanner->get();
     }
 
     *type = CONFIG_TOKEN_NUMBER;
@@ -139,7 +139,7 @@ bool ConfigLexer::get_token(int* type, std::string* data)
     return true;
   }
   // Addition operator
-  else if ((buf == '+') && (m_scanner->at(m_scanner->pos()+1) == '='))
+  else if ((buf == '+') && (m_scanner->at(m_scanner->pos() + 1) == '='))
   {
     *type = CONFIG_TOKEN_OPERATOR_APPEND;
     m_scanner->move(2);
@@ -159,17 +159,17 @@ bool ConfigLexer::get_token(int* type, std::string* data)
     while (m_scanner->left() > 0)
     {
       // Avoid a couple of get() calls
-    temp = m_scanner->get();
+      temp = m_scanner->get();
 
       // We've found the end of the string
-    if (temp == quote)
+      if (temp == quote)
       {
         // Time to stop parsing!
         break;
       }
 
       // This is used to escape other characters or itself
-    if (temp == '\\')
+      if (temp == '\\')
       {
         // Skip past the slash
         m_scanner->move(1);
@@ -180,7 +180,7 @@ bool ConfigLexer::get_token(int* type, std::string* data)
         // Control characters (more can/will be added)
         switch (temp)
         {
-        // New line
+          // New line
         case 'n':
           temp = '\n';
           break;
@@ -188,10 +188,10 @@ bool ConfigLexer::get_token(int* type, std::string* data)
       }
 
       // Add the character to the data string
-    data->append(&temp, 1);
+      data->append(&temp, 1);
 
       // Move forward one
-    m_scanner->move(1);
+      m_scanner->move(1);
     }
 
     // Skip past the ending quote
@@ -203,20 +203,20 @@ bool ConfigLexer::get_token(int* type, std::string* data)
     buf = m_scanner->get();
     while ((buf == ' ') || (buf == '\n') || (buf == '\r') || (buf == '\t'))
     {
-    m_scanner->move(1);
-    buf = m_scanner->get();
+      m_scanner->move(1);
+      buf = m_scanner->get();
     }
 
     // A quoted string followed by a colon is a label
     if (buf == ':')
     {
       *type = CONFIG_TOKEN_LABEL;
-    m_scanner->move(1);
+      m_scanner->move(1);
     }
     else
     {
       *type = CONFIG_TOKEN_STRING;
-    m_scanner->move(0-(m_scanner->pos()-old_pos));
+      m_scanner->move(0 - (m_scanner->pos() - old_pos));
     }
 
     return true;
@@ -261,8 +261,8 @@ bool ConfigLexer::get_token(int* type, std::string* data)
   {
     while (buf != '\n')
     {
-    m_scanner->move(1);
-    buf = m_scanner->get();
+      m_scanner->move(1);
+      buf = m_scanner->get();
     }
 
     return get_token(type, data);
