@@ -653,12 +653,13 @@ bool user_delItem(const char* user, int item, int count, int health)
   return false;
 }
 
-bool user_kick(const char* user, const char* reason)
+bool user_kick(const char* userStr, const char* reason)
 {
-  User* tempuser = userFromName(std::string(user));
-  if(tempuser == NULL){ return false; }
-  chat_sendmsg((std::string(user) + " kicked " + std::string(reason)).c_str());
-  tempuser->kick(std::string(reason));
+  User* user = userFromName(std::string(userStr));
+  if(user == NULL){ return false; }
+  chat_sendmsg((std::string(userStr) + " kicked " + std::string(reason)).c_str());
+  std::string msg = "You were kicked " + std::string(reason);
+  user->buffer << (int8_t)PACKET_KICK << msg;
   return true;
 }
 
