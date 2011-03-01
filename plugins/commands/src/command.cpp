@@ -726,6 +726,11 @@ void sendHelp(std::string user, std::string command, std::deque<std::string> arg
   }
 }
 
+void kickPlayer(std::string user, std::string command, std::deque<std::string> args)
+{
+
+}
+
 void sendMOTD(std::string user, std::string command, std::deque<std::string> args)
 {
   std::string line;
@@ -775,6 +780,7 @@ PLUGIN_API_EXPORT void CALLCONVERSION command_init(mineserver_pointer_struct* mi
   registerCommand(new Command(parseCmd("cuboid"), "", "type in the command and place two blocks, it will fill the space between them", cuboid));  
   registerCommand(new Command(parseCmd("players who names list"), "", "Lists online players", playerList));
   registerCommand(new Command(parseCmd("give"), "<player> <id/alias> [count]", "Gives <player> [count] pieces of <id/alias>. By default [count] = 1", giveItems));
+  registerCommand(new Command(parseCmd("kick"), "<player>", "Kick player from server", kickPlayer));
   registerCommand(new Command(parseCmd("save"), "", "Manually save map to disc", saveMap));  
   registerCommand(new Command(parseCmd("setspawn"), "", "", setSpawn));  
   registerCommand(new Command(parseCmd("help"), "[<commandName>]", "Display this help message.", sendHelp));
