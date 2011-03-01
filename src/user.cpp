@@ -292,8 +292,11 @@ bool User::sendLoginInfo()
 // Kick player
 bool User::kick(std::string kickMsg)
 {
-  buffer << (int8_t)PACKET_KICK << kickMsg;
-
+  std::string msg = "boo";
+  buffer << (int8_t)PACKET_KICK << msg.c_str();
+  buffer.addToWrite(&msg,msg.size());
+  
+  //Can someone explain this line?
   (static_cast<Hook2<bool,const char*,const char*>*>(Mineserver::get()->plugin()->getHook("PlayerKickPost")))->doAll(nick.c_str(), kickMsg.c_str());
 
   Mineserver::get()->logger()->log(LogType::LOG_WARNING, "User", nick + " kicked. Reason: " + kickMsg);

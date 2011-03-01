@@ -726,9 +726,22 @@ void sendHelp(std::string user, std::string command, std::deque<std::string> arg
   }
 }
 
-void kickPlayer(std::string user, std::string command, std::deque<std::string> args)
+void kickUser(std::string user, std::string command, std::deque<std::string> args)
 {
-
+  if (args.size() >= 1)
+  {
+    std::string player = args[0];
+    std::string reason = "";
+    for (std::deque<std::string>::const_iterator it = args.begin() + 1; it < args.end(); ++it)
+    {
+      reason += *it + " ";
+    }
+    mineserver->user.kick(player.c_str(), reason.c_str());
+  }
+  else
+  {
+    mineserver->chat.sendmsgTo(user.c_str(),"Usage: /kick <player> <reason>");
+  }
 }
 
 void sendMOTD(std::string user, std::string command, std::deque<std::string> args)
@@ -780,7 +793,7 @@ PLUGIN_API_EXPORT void CALLCONVERSION command_init(mineserver_pointer_struct* mi
   registerCommand(new Command(parseCmd("cuboid"), "", "type in the command and place two blocks, it will fill the space between them", cuboid));  
   registerCommand(new Command(parseCmd("players who names list"), "", "Lists online players", playerList));
   registerCommand(new Command(parseCmd("give"), "<player> <id/alias> [count]", "Gives <player> [count] pieces of <id/alias>. By default [count] = 1", giveItems));
-  registerCommand(new Command(parseCmd("kick"), "<player>", "Kick player from server", kickPlayer));
+  registerCommand(new Command(parseCmd("kick"), "<player> [reason]", "Kick player from server", kickUser));
   registerCommand(new Command(parseCmd("save"), "", "Manually save map to disc", saveMap));  
   registerCommand(new Command(parseCmd("setspawn"), "", "", setSpawn));  
   registerCommand(new Command(parseCmd("help"), "[<commandName>]", "Display this help message.", sendHelp));

@@ -210,11 +210,11 @@ bool chat_sendmsgTo(const char* user,const char* msg)
     return true;
   }
   for(unsigned int i = 0; i < Mineserver::get()->users().size(); i++)
-  {
-    if(Mineserver::get()->users()[i]->fd && Mineserver::get()->users()[i]->logged)
+  {  	
+    User* user = Mineserver::get()->users()[i];
+    if(user->fd && user->logged && !(user->dnd))
     {
-      // Don't send to his user if he is DND and the message is a chat message
-      if(userStr == Mineserver::get()->users()[i]->nick)
+      if(userStr == user->nick)
       {
         Mineserver::get()->users()[i]->buffer << (int8_t)PACKET_CHAT_MESSAGE << std::string(msg);
         return true;
@@ -226,16 +226,13 @@ bool chat_sendmsgTo(const char* user,const char* msg)
 
 bool chat_sendmsg(const char* msg)
 {
-  std::string msgStr(msg);
+  LOG(INFO, "Chat", msg);
   for(unsigned int i = 0; i < Mineserver::get()->users().size(); i++)
   {
-    if(Mineserver::get()->users()[i]->fd && Mineserver::get()->users()[i]->logged)
+    User* user = Mineserver::get()->users()[i];
+    if(user->fd && user->logged && !(user->dnd))
     {
-      // Don't send to his user if he is DND and the message is a chat message
-      if(!(Mineserver::get()->users()[i]->dnd))
-      {
-        Mineserver::get()->users()[i]->buffer << (int8_t)PACKET_CHAT_MESSAGE << msgStr;
-      }
+        Mineserver::get()->users()[i]->buffer << (int8_t)PACKET_CHAT_MESSAGE << std::string(msg);
     }
   }
   return true;
@@ -656,11 +653,12 @@ bool user_delItem(const char* user, int item, int count, int health)
   return false;
 }
 
-bool user_kick(const char* user)
+bool user_kick(const char* user, const char* reason)
 {
   User* tempuser = userFromName(std::string(user));
   if(tempuser == NULL){ return false; }
-  tempuser->kick("You have been kicked!"); // Need to allow other languages.
+  chat_sendmsg((std::string(user) + " kicked " + std::string(reason)).c_str());
+  tempuser->kick(std::string(reason));
   return true;
 }
 
